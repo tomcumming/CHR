@@ -1,0 +1,41 @@
+cabal-version:      3.4
+name:               chr
+version:            0.0.0.1
+license:            MIT
+license-file:       LICENSE
+author:             Tom Cumming
+maintainer:         mail@tomcumming.co.uk
+
+common shared
+    default-language: GHC2024
+    ghc-options: -Wall
+    default-extensions:
+        TypeFamilies,
+        DerivingVia
+    build-depends:
+        base,
+        containers,
+        mtl,
+        data-fix,
+        free,
+        recursion-schemes,
+        transformers-compat
+
+common dev-dependencies
+    build-depends:
+        ormolu,
+
+library
+    import:           shared
+    hs-source-dirs:   src
+    exposed-modules:
+        CHR.Unify
+        CHR.Partial
+
+test-suite chr-test
+    import:           shared, dev-dependencies
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        chr
