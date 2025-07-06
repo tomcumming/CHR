@@ -29,8 +29,9 @@ library
     import:           shared
     hs-source-dirs:   src
     exposed-modules:
-        CHR.Unify
+        CHR.IndexedSet
         CHR.Partial
+        CHR.Unify
 
 test-suite chr-test
     import:           shared, dev-dependencies
