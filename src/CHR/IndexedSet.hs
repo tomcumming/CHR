@@ -44,15 +44,15 @@ insert a is =
           (keys a)
     }
 
-remove :: forall a. (Indexed a) => a -> IndexedSet a -> IndexedSet a
-remove a is =
+removeMany :: forall a. (Indexed a) => Set.Set a -> IndexedSet a -> IndexedSet a
+removeMany as is =
   IndexedSet
-    { isPrimary = Set.delete a (isPrimary is),
+    { isPrimary = Set.difference (isPrimary is) as,
       isSecondary =
         foldr
-          (Map.update (pruneEmpty . Set.delete a))
+          (Map.update (pruneEmpty . (`Set.difference` as)))
           (isSecondary is)
-          (keys a)
+          (foldMap keys as)
     }
   where
     pruneEmpty :: Set.Set a -> Maybe (Set.Set a)
@@ -60,7 +60,10 @@ remove a is =
       | Set.null s = Nothing
       | otherwise = Just s
 
+remove :: forall a. (Indexed a) => a -> IndexedSet a -> IndexedSet a
+remove a = removeMany (Set.singleton a)
+
 popWithKey :: (Indexed a) => Key a -> IndexedSet a -> (Set.Set a, IndexedSet a)
-popWithKey k is = (as, foldr remove is as)
+popWithKey k is = (as, removeMany as is)
   where
     as = fromMaybe mempty $ isSecondary is Map.!? k
