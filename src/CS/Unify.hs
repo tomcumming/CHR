@@ -1,4 +1,4 @@
-module CHR.Unify
+module CS.Unify
   ( Unify (..),
     Match (..),
   )

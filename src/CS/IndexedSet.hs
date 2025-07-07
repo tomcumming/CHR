@@ -1,4 +1,4 @@
-module CHR.IndexedSet
+module CS.IndexedSet
   ( Indexed (..),
     IndexedSet,
     asSet,

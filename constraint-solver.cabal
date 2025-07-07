@@ -1,5 +1,5 @@
 cabal-version:      3.4
-name:               chr
+name:               constraint-solver
 version:            0.0.0.1
 license:            MIT
 license-file:       LICENSE
@@ -29,14 +29,14 @@ library
     import:           shared
     hs-source-dirs:   src
     exposed-modules:
-        CHR.IndexedSet
-        CHR.Partial
-        CHR.Unify
+        CS.IndexedSet
+        CS.Partial
+        CS.Unify
 
-test-suite chr-test
+test-suite cs-test
     import:           shared, dev-dependencies
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
     main-is:          Main.hs
     build-depends:
-        chr
+        constraint-solver

@@ -1,42 +1,36 @@
 module Main (main) where
 
-import CHR.Partial
-  ( MatchCons (..),
-    Partial,
-    PartialSubs,
-    simpleMatch,
-    simpleUnify,
-  )
-import CHR.Unify (Match (..), Unify (..))
+import CS.Partial (MatchCons (..), Partial)
+import CS.Unify (Match (..))
 import Control.Monad.Free (Free (..))
 import Data.Functor.Classes (Show1)
 import Data.Functor.Classes.Generic (FunctorClassesDefault (..))
 import GHC.Generics (Generic1)
 
+data Inst a
+  = ICon String
+  | IAp a a
+  deriving (Functor, Foldable, Show, Generic1)
+  deriving (Show1) via FunctorClassesDefault Inst
+
+instance MatchCons Inst where
+  matchCons = curry $ \case
+    (ICon c1, ICon c2) -> c1 == c2
+    (IAp {}, IAp {}) -> True
+    _ -> False
+
 data Ty a
-  = Con String
-  | Ap a a
+  = TVar String
+  | TAp a a
+  -- TODO Forall (debruijn)
   deriving (Functor, Foldable, Show, Generic1)
   deriving (Show1) via FunctorClassesDefault Ty
 
-instance MatchCons Ty where
-  matchCons = curry $ \case
-    (Con c1, Con c2) -> c1 == c2
-    (Ap {}, Ap {}) -> True
-    _ -> False
-
-instance Unify (Partial Ty) where
-  type Subs (Partial Ty) = PartialSubs Ty
-  unify = simpleUnify
-
-instance Match (Partial Ty) where
-  match = simpleMatch
-
-maybeHead, someVar :: Partial Ty
+maybeHead, someVar :: Partial Inst
 maybeHead =
   Free $
-    Ap
-      (Free $ Con "Maybe")
+    IAp
+      (Free $ ICon "Maybe")
       (Pure $ toEnum 1)
 someVar = Pure $ toEnum 3
 
